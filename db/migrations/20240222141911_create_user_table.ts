@@ -7,8 +7,6 @@ export async function up(knex: Knex): Promise<void> {
         table.text('name').notNullable();
         table.text('login').notNullable();
         table.text('password').notNullable();
-        table.text('id_meal').unsigned();   
-        table.foreign('id_meal').references('tb_meal.id');
     });
 }
 
