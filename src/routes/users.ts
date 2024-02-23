@@ -40,7 +40,8 @@ export async function userRoutes(app: FastifyInstance){
         const users = await knex('tb_users')
         .where('session_id', sessionId)
         .where('login','like',`%${searchTerm}%`)
-        .orWhere('name','like',`%${searchTerm}%`)
+        .orWhere('name','like',`%${searchTerm}%`)   
+        .orWhere('id','like', `%${searchTerm}%`)
         .select()
 
         return { users }
