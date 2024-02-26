@@ -12,19 +12,13 @@ export async function mealRoutes(app: FastifyInstance){
     {
         preHandler: [validateSessionId]
     },
-    async (request)=>{
-
-        const sessionId = request.cookies.session_id
-
-        console.log(request.tb_user?.id)
-
-        
+    async (request, response)=>{        
 
         const meal = await knex('tb_meal')
-        .where({'id_user': request.tb_user?.id})
+        .where('id_user', request.user?.id)
         .select()
 
-        return {meal}
+        response.status(200).send({meal})
     }
     )
 
@@ -33,7 +27,7 @@ export async function mealRoutes(app: FastifyInstance){
     {
         preHandler: [validateSessionId]
     },
-    async (request) =>{
+    async (request, response) =>{
         
         const idMealSchema = z.object({
             id: z.string()
@@ -41,28 +35,22 @@ export async function mealRoutes(app: FastifyInstance){
 
         const { id } = idMealSchema.parse(request.params)
 
-        const meal = await knex('tb_meal')
+        const meal = await knex('tb_users')
         .where('id_user', id)
         .orWhere('id', id)
         
-        return {meal}
+        response.status(200).send({meal})
     }
     )
     
-    app.get('/metrics/:id', 
+    app.get('/metrics', 
     {
         preHandler:[validateSessionId]
     },
-    async (request) =>{
-        
-        const idUserSchema = z.object({
-            id: z.string()
-        })
-
-        const { id } = idUserSchema.parse(request.params)
+    async (request, response) =>{
 
         const mealsUser = knex('tb_meal')
-        .where('id_user',id)
+        .where('id_user',request.user?.id)
         .select()
         
         const metric = (await mealsUser).reduce((acc, meal) =>{
@@ -89,7 +77,7 @@ export async function mealRoutes(app: FastifyInstance){
 
         const { total, inside, outside, bestSequence } = metric
 
-        return { total, inside, outside, bestSequence }
+        response.status(200).send({ total, inside, outside, bestSequence })
     }
     )
 
@@ -110,17 +98,12 @@ export async function mealRoutes(app: FastifyInstance){
 
         const {description, name, type} = mealRequestSchema.parse(request.body)
 
-        const id_user = await knex('tb_users')
-        .where('session_id',sessionId)
-        .select('id')
-
-        const { id } = id_user[0]
         const id_meal = randomUUID()
 
         await knex('tb_meal')
         .insert({
             id: id_meal,
-            id_user:id,
+            id_user: request.user?.id,
             name,
             description,
             type
@@ -139,7 +122,7 @@ export async function mealRoutes(app: FastifyInstance){
         const mealBodySchema = z.object({
             name: z.string(),
             description: z.string(),
-            createdAt: z.string(),
+            createdAt: z.coerce.date(),
             type: z.enum(['inside','outside'])
         })
 
@@ -153,7 +136,8 @@ export async function mealRoutes(app: FastifyInstance){
         }
 
         console.log(id)
-        await knex('tb_meal')   
+        await knex('tb_meal')
+        .where('id_user', request.user?.id)
         .where('id',id)
         .update({
             name,
@@ -177,6 +161,7 @@ export async function mealRoutes(app: FastifyInstance){
         const { id } = deleteIdSchema.parse(request.params)
 
         await knex('tb_meal')
+        .where('id_user', request.user?.id)
         .where('id',id)
         .delete()
         response.status(204).send()
