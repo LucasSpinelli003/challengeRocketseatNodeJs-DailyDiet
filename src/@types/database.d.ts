@@ -5,9 +5,8 @@ declare module 'knex/types/tables' {
         tb_users:{
             id: string,
             name: string,
-            login: string,
             password: string,
-            id_meal: string | null,
+            login: string,
             session_id: string
         },
         tb_meal:{
@@ -16,7 +15,7 @@ declare module 'knex/types/tables' {
             description: string,
             createdAt: Date,
             type: 'inside' | 'outside',
-            id_user: string
+            id_user?: string
         }
     }
 }

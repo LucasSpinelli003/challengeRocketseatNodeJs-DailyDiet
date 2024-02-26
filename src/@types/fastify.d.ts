@@ -7,7 +7,6 @@ declare module 'fastify' {
             name: string,
             login: string,
             password: string,
-            id_meal: string | null,
             session_id: string
           }
     }

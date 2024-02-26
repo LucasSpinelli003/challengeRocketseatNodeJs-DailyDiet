@@ -88,8 +88,6 @@ export async function mealRoutes(app: FastifyInstance){
     }
     ,async (request, response) =>{
 
-        const sessionId = request.cookies.session_id
-
         const mealRequestSchema = z.object({
             name: z.string(),
             description: z.string(),
