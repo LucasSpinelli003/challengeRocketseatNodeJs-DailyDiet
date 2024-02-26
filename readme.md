@@ -14,4 +14,4 @@
 
 - npm run start:dev
 
-# YOU ALSO CAN CHECK OR ADD SCRIPTS IN 'package.json'
+YOU ALSO CAN CHECK OR ADD SCRIPTS IN 'package.json'
