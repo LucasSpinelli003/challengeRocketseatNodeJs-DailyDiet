@@ -1,14 +1,14 @@
 ## install dependencies
 ```
-- npm i
+ npm i
 ```
 ## run database migrations
 ```
-- npm run knex -- migrate:latest
+ npm run knex -- migrate:latest
 ```
 ## create .env file
 ```
-- use .env.example with example to create .env
+ use .env.example with example to create .env
 ```
 ## Start api 
 
