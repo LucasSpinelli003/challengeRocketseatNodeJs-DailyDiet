@@ -35,7 +35,7 @@ export async function mealRoutes(app: FastifyInstance){
 
         const { id } = idMealSchema.parse(request.params)
 
-        const meal = await knex('tb_users')
+        const meal = await knex('tb_meal')
         .where('id_user', id)
         .orWhere('id', id)
         
@@ -132,8 +132,6 @@ export async function mealRoutes(app: FastifyInstance){
         if(!newDate){
             response.status(400).send()
         }
-
-        console.log(id)
         await knex('tb_meal')
         .where('id_user', request.user?.id)
         .where('id',id)
